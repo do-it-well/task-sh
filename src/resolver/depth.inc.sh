@@ -2,18 +2,36 @@
 _task_require run
 
 _task_resolver_depth() {
-	local verb="$1"; shift
-	"_task_resolver_depth_${verb}" "$@"
+	local verb
+	local resolvers_arg=( )
+	if [[ "$1" != "${1#--resolvers=}" ]]; then
+		resolvers_arg=( "$1" )
+		shift
+	fi
+	verb="$1"; shift
+
+	"_task_resolver_depth_${verb}" "${resolvers_arg[@]}" "$@"
 }
 
+# The depth resolver checks multiple inner resolvers, returning the match which
+# consumes the most components.
 _task_resolver_depth_resolve() {
 	if [[ $# -lt 1 ]]; then
 		printf 'Nothing to resolve: No path passed to _task_resolver_depth_resolve\n' >&2
 		return 1
 	fi
 
-	local resolvers
-	IFS=: read -a resolvers <<<"${TASK_RESOLVERS:-0+_task_resolver_command}"
+	local resolvers=()
+	local resolvers_arg
+	if [[ "$1" != "${1#--resolvers=}" ]]; then
+		resolvers_arg="${1#--resolvers=}"
+		shift
+
+		IFS=: read -a resolvers <<<"${resolvers_arg:-0+_task_resolver_command}"
+	else
+		IFS=: read -a resolvers <<<"${TASK_RESOLVERS:-0+_task_resolver_command}"
+	fi
+
 	local resolver
 	local candidate_consumed
 	local candidate_resolution
