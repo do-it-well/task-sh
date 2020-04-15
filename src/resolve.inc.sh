@@ -15,6 +15,11 @@ _task_resolve() {
 		return 1
 	fi
 
+	if [[ "$1" = '_' ]] && [[ $# -gt 1 ]]; then
+		_task_resolve_builtin "${@:2}" || return 1
+		return 0
+	fi
+
 	local resolvers
 	IFS=: read -a resolvers <<<"${TASK_RESOLVERS:-0+_task_resolver_command}"
 	local resolver
@@ -24,6 +29,19 @@ _task_resolve() {
 			return 0
 		fi
 	done
+
+	return 1
+}
+
+_task_resolve_builtin() {
+	[[ $# -ge 1 ]] || return 1
+
+	case "$1" in
+		msg)
+			printf '%d+%s+%s' 2 _ msg
+			return 0
+			;;
+	esac
 
 	return 1
 }
