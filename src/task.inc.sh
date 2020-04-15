@@ -2,6 +2,7 @@
 _task_require resolve
 _task_require run
 _task_require msg
+_task_require envfile
 
 task() {
 	local resolution

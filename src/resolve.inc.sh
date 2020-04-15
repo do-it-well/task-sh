@@ -37,6 +37,10 @@ _task_resolve_builtin() {
 	[[ $# -ge 1 ]] || return 1
 
 	case "$1" in
+		envfile)
+			printf '%d+%s+%s' 2 _ envfile
+			return 0
+			;;
 		msg)
 			printf '%d+%s+%s' 2 _ msg
 			return 0
