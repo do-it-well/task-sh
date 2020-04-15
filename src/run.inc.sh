@@ -7,7 +7,7 @@ _task_run() {
 	local resolver
 
 	if [[ "$resolution" = "${resolution#*+}" ]]; then
-		printf "invalid resolution '%s' passed to _task_run (consumed not specified)\n" "$full_resolution" >&2
+		_task_msg TRACE "invalid resolution '%s' passed to _task_run (consumed not specified)\n" "$full_resolution" >&2
 		return 1
 	fi
 	consumed="${resolution%%+*}"
