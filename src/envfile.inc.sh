@@ -13,6 +13,7 @@ _task_envfile(){
 	local ignore
 	local do_ignore
 	for file in "$@"; do
+		file="$( _task_envfile_subst "$file" )"
 		[[ -r "$file" ]] || continue
 
 		while read -r -d $'\0' env; do
@@ -31,4 +32,26 @@ _task_envfile(){
 			env -i "${SHELL}" -c 'set -a; source "$1"; env -0' -- "$file"
 		)
 	done
+}
+
+_task_envfile_subst(){
+	local str="$1"
+	local lead
+	local tail
+	local minuslead
+	local curlyvar
+	local var
+
+	local gaurd=
+	while [[ "$str" != "${str%\{*\}*}" ]] && [[ "$gaurd" != "$str" ]]; do
+		lead="${str%\{*\}*}"
+		minuslead="${str#$lead}"
+		tail="${minuslead#*\}}"
+		curlyvar="${minuslead%$tail}"
+		var="${curlyvar#\{}"; var="${var%\}}";
+
+		gaurd="$str"
+		str="${str//$curlyvar/${!var:-}}"
+	done
+	printf '%s' "$str"
 }
