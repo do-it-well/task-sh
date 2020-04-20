@@ -36,19 +36,19 @@ _task_run_builtin() {
 
 	case "$resolution" in
 		envfile)
-			_task_envfile "$@"
+			_task_envfile "$@" && true
 			return $?
 			;;
 		msg)
-			_task_msg "$@"
+			_task_msg "$@" && true
 			return $?
 			;;
 		resolve)
-			_task_resolve "$@"
+			_task_resolve "$@" && true
 			return $?
 			;;
 		run)
-			_task_run "$@"
+			_task_run "$@" && true
 			return $?
 			;;
 	esac
