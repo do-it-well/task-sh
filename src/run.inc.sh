@@ -43,6 +43,14 @@ _task_run_builtin() {
 			_task_msg "$@"
 			return $?
 			;;
+		resolve)
+			_task_resolve "$@"
+			return $?
+			;;
+		run)
+			_task_run "$@"
+			return $?
+			;;
 	esac
 
 	_task_msg TRACE "invalid resolution '$resolution' passed to _task_run_builtin"

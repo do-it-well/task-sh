@@ -45,6 +45,14 @@ _task_resolve_builtin() {
 			printf '%d+%s+%s' 2 _ msg
 			return 0
 			;;
+		resolve)
+			printf '%d+%s+%s' 2 _ resolve
+			return 0
+			;;
+		run)
+			printf '%d+%s+%s' 2 _ run
+			return 0
+			;;
 	esac
 
 	return 1
