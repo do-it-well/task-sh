@@ -21,10 +21,23 @@ _task_resolve() {
 	fi
 
 	local resolvers
-	IFS=: read -a resolvers <<<"${TASK_RESOLVERS:-0+_task_resolver_command}"
+	local resolvers_env
+	resolvers_env="${TASK_RESOLVERS:-}"
+	while [[ "${resolvers_env#:}" != "${resolvers_env}" ]]; do
+		resolvers_env="${resolvers_env#:}"
+	done
+	while [[ "${resolvers_env%:}" != "${resolvers_env}" ]]; do
+		resolvers_env="${resolvers_env%:}"
+	done
+	if [[ -z "$resolvers_env" ]]; then
+		resolves_env='0+_task_resolver_command'
+	fi
+
+	IFS=: read -a resolvers <<<"${resolvers_env}"
 	local resolver
 
 	for resolver in "${resolvers[@]}"; do
+		[[ -n "$resolver" ]] || continue
 		if _task_run "${resolver}" resolve "$@"; then
 			return 0
 		fi
