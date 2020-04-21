@@ -10,7 +10,11 @@ _task_resolver_depth() {
 	fi
 	verb="$1"; shift
 
-	"_task_resolver_depth_${verb}" "${resolvers_arg[@]}" "$@"
+	if [[ "${#resolvers_arg[@]}" -gt 0 ]]; then
+		"_task_resolver_depth_${verb}" "${resolvers_arg[@]}" "$@"
+	else
+		"_task_resolver_depth_${verb}" "$@"
+	fi
 }
 
 # The depth resolver checks multiple inner resolvers, returning the match which
