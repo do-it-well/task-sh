@@ -29,7 +29,18 @@ _task_envfile(){
 				declare -g -x "$env"
 			fi
 		done < <(
-			env -i "${SHELL}" -c 'set -a; source "$1"; env -0' -- "$file"
+			env -i "bash" -c '
+				set -a; source "$1";
+				eval "x=($(declare -x))"
+				n=0
+				for xx in "${x[@]}"; do
+					n=$((n+1))
+					if [[ $n -eq 3 ]]; then
+						printf "%s\0" "$xx"
+						n=0
+					fi
+				done
+			' -- "$file"
 		)
 	done
 }
